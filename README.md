@@ -14,7 +14,6 @@ A concrete, motion-domain surname (**xMotion**) over abstract, mathematical comp
 | **xmGamma** | γ | visualization | `rxdu/quickviz` |
 | **xmZeta** | ζ | MCU firmware (Zephyr) | `rxdu/xmzeta` |
 | **xmKappa** | κ | PCB / electronics (KiCAD) | `rxdu/xmkappa` |
-| **xmBot-\*** | — | per-robot applications | `rxdu/xmbot-swerve`, `…-tracked`, `…-legged` |
 
 Dependencies point downward only: `xmSigma ← xmMu`, `xmSigma ← xmNabla`, `xmSigma ← xmGamma`; applications depend on any.
 
@@ -28,6 +27,16 @@ Dependencies point downward only: `xmSigma ← xmMu`, `xmSigma ← xmNabla`, `xm
         ├─ xmZeta   (ζ)  firmware (Zephyr) Zephyr · damping ratio
         └─ xmKappa  (κ)  PCB (KiCAD)       KiCAD · curvature
 ```
+
+## Applications
+
+Per-robot controllers built on the xMotion library — thin consumers of the components above, each maintained in its own repository.
+
+| Application | Robot platform | Repo |
+|-------------|----------------|------|
+| **xmBot-Swerve** | swerve-drive robot | `rxdu/xmbot-swerve` |
+| **xmBot-Tracked** | tracked robot | `rxdu/xmbot-tracked` |
+| **xmBot-Legged** | legged / quadruped robot | `rxdu/xmbot-legged` |
 
 ## How this umbrella works
 
