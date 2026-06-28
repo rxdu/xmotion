@@ -1,67 +1,53 @@
+<div align="center">
+
+<img src="branding/icons/xmsigma.svg" width="60" alt="xmSigma">&nbsp;
+<img src="branding/icons/xmmu.svg" width="60" alt="xmMu">&nbsp;
+<img src="branding/icons/xmnabla.svg" width="60" alt="xmNabla">&nbsp;
+<img src="branding/icons/xmgamma.svg" width="60" alt="xmGamma">&nbsp;
+<img src="branding/icons/xmzeta.svg" width="60" alt="xmZeta">&nbsp;
+<img src="branding/icons/xmkappa.svg" width="60" alt="xmKappa">
+
 # xMotion
 
-**xMotion** is a family of components for mobile-robot motion: a reusable software stack plus its firmware and hardware companions. This repository is the **umbrella** — a thin superbuild that assembles the component repos and hosts the family-level documentation. Each component is maintained in its own repository (they differ by dependency footprint and toolchain) and can be built and consumed independently.
+**A component family for mobile-robot motion** — a reusable software stack with its firmware and hardware companions.
 
-## The family
+</div>
 
-A concrete, motion-domain surname (**xMotion**) over abstract, mathematical component codenames — each a math symbol whose first letter hooks the underlying technology and whose meaning matches the module's job.
+---
 
-| Component | Symbol | Role | Repo |
-|-----------|--------|------|------|
-| **xmSigma** | Σ | runtime foundation — logging, event, ipc, math, containers | `rxdu/xmsigma` |
-| **xmMu** | μ | host-side hardware drivers — motor / CAN / serial / modbus / sbus / imu | `rxdu/xmmu` |
-| **xmNabla** | ∇ | motion algorithms — planning, control, estimation, mapping | `rxdu/xmnabla` |
-| **xmGamma** | γ | visualization | `rxdu/quickviz` |
-| **xmZeta** | ζ | MCU firmware (Zephyr) | `rxdu/xmzeta` |
-| **xmKappa** | κ | PCB / electronics (KiCAD) | `rxdu/xmkappa` |
+This repository is the **umbrella**: a thin CMake superbuild that assembles the components (pinned as git submodules under `components/`) and hosts family-level docs. Every component also stands alone — build, test, and `find_package` just the ones you need; the umbrella only fixes a known-good combination.
 
-Dependencies point downward only: `xmSigma ← xmMu`, `xmSigma ← xmNabla`, `xmSigma ← xmGamma`; applications depend on any.
+## Components
 
-```
-        xMotion  ──  the motion-robotics stack
-        │
-        ├─ xmSigma  (Σ)  foundation        substrate · covariance
-        ├─ xmMu     (μ)  drivers           Motor · friction
-        ├─ xmNabla  (∇)  motion algorithms gradient — the centerpiece
-        ├─ xmGamma  (γ)  visualization     Graphics · gamma correction
-        ├─ xmZeta   (ζ)  firmware (Zephyr) Zephyr · damping ratio
-        └─ xmKappa  (κ)  PCB (KiCAD)       KiCAD · curvature
-```
+|   | Component | Role | Repo |
+|---|-----------|------|------|
+| **Σ** | xmSigma | foundation — logging · ipc · math · common types | [rxdu/xmSigma](https://github.com/rxdu/xmSigma) |
+| **μ** | xmMu | host hardware drivers — motor · CAN · serial · modbus · sbus · imu | [rxdu/xmMu](https://github.com/rxdu/xmMu) |
+| **∇** | xmNabla | motion algorithms — planning · control · estimation · mapping&nbsp;·&nbsp;*centerpiece* | [rxdu/xmNabla](https://github.com/rxdu/xmNabla) |
+| **γ** | xmGamma | visualization | [rxdu/quickviz](https://github.com/rxdu/quickviz) |
+| **ζ** | xmZeta | MCU firmware (Zephyr) | [rxdu/xmZeta](https://github.com/rxdu/xmZeta) |
+| **κ** | xmKappa | PCB / electronics (KiCAD) | [rxdu/xmKappa](https://github.com/rxdu/xmKappa) |
+
+Everything builds on **xmSigma**; dependencies point downward only. Two pairs span the boundary: **Σ/μ** on the host, **ζ/κ** on the embedded target — with **∇** the motion-algorithms core.
 
 ## Applications
 
-Per-robot controllers built on the xMotion library — thin consumers of the components above, each maintained in its own repository.
+Per-robot controllers — thin consumers of the stack, each in its own repo: [xmBot-Swerve](https://github.com/rxdu/xmbot-swerve) · [xmBot-Tracked](https://github.com/rxdu/xmbot-tracked) · [xmBot-Legged](https://github.com/rxdu/xmbot-legged).
 
-| Application | Robot platform | Repo |
-|-------------|----------------|------|
-| **xmBot-Swerve** | swerve-drive robot | `rxdu/xmbot-swerve` |
-| **xmBot-Tracked** | tracked robot | `rxdu/xmbot-tracked` |
-| **xmBot-Legged** | legged / quadruped robot | `rxdu/xmbot-legged` |
-
-## How this umbrella works
-
-The software components live under `components/` as **git submodules pinned to exact commits**. The umbrella's top-level CMake is a superbuild that configures the pinned set together, so `clone → configure → build` produces the whole stack from a known-good combination — without forcing independent semantic-version management across repos.
-
-You do **not** have to use the umbrella. Each component repo builds, tests, installs, and is `find_package`-able on its own; depend on just the ones you need.
-
-> **Status:** scaffolding. The component submodules are wired during the repo transition — see [docs/adr/0002-repo-transition-plan.md](docs/adr/0002-repo-transition-plan.md).
-
-## Build (once components are wired)
+## Build
 
 ```bash
-git clone --recurse-submodules git@github.com:rxdu/xmotion.git
+git clone --recurse-submodules https://github.com/rxdu/xmotion.git
 cd xmotion
-cmake --preset default
-cmake --build build
+cmake --preset default && cmake --build build
 ```
 
-Select components with `-DXMOTION_WITH_<NAME>=ON/OFF` (see `CMakeLists.txt`).
+Each submodule is pinned to an exact commit, so `clone → configure → build` always reproduces a known-good set. Toggle components with `-DXMOTION_WITH_<NAME>=ON/OFF`.
 
 ## Documentation
 
-- [ADR 0001 — Component Architecture & Naming](docs/adr/0001-component-architecture.md)
-- [ADR 0002 — Repo Transition Plan](docs/adr/0002-repo-transition-plan.md)
+[Architecture & naming](docs/adr/0001-component-architecture.md) · [Transition plan](docs/adr/0002-repo-transition-plan.md) · [Brand & icons](branding/README.md)
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE). Bundled third-party submodules retain their own licenses.
+Apache-2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE). Bundled third-party submodules retain their own licenses.
