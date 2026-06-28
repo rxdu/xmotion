@@ -1,0 +1,16 @@
+[submodule "components/sigma"]
+	path = components/sigma
+	url = https://github.com/rxdu/xmSigma.git
+	branch = main
+[submodule "components/mu"]
+	path = components/mu
+	url = https://github.com/rxdu/xmMu.git
+	branch = main
+[submodule "components/nabla"]
+	path = components/nabla
+	url = https://github.com/rxdu/xmNabla.git
+	branch = devel
+[submodule "components/gamma"]
+	path = components/gamma
+	url = https://github.com/rxdu/quickviz.git
+	branch = main
